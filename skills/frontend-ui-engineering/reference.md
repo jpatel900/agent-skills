@@ -83,7 +83,7 @@ export function TaskList({ tasks }: { tasks: Task[] }) {
 }
 ```
 
-## Design System Adherence
+## Design System Adherence (continued)
 
 ### Spacing and Layout
 
@@ -249,7 +249,7 @@ function useToggleTask() {
 
 ## See Also
 
-For detailed accessibility requirements and testing tools, see `references/accessibility-checklist.md`.
+For detailed accessibility requirements and testing tools, see `../../references/accessibility-checklist.md`.
 
 ## Common Rationalizations
 
