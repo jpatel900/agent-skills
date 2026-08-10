@@ -2,6 +2,8 @@
 
 This is the agent-skills project — a collection of production-grade engineering skills for AI coding agents.
 
+> **Scope:** This file configures agents working on the [`addyosmani/agent-skills`](https://github.com/addyosmani/agent-skills) repository itself, not other projects. Don't copy it into another project or a global agent configuration; the reusable assets are the skills in `skills/`.
+
 ## Project Structure
 
 ```
@@ -10,6 +12,7 @@ agents/       → Reusable agent personas (code-reviewer, test-engineer, securit
 hooks/        → Session lifecycle hooks
 .claude/commands/ → Slash commands (/spec, /plan, /build, /test, /review, /code-simplify, /ship; plus /webperf specialist audit)
 references/   → Supplementary checklists (testing, performance, security, accessibility, observability)
+evals/        → Skill eval cases + framework (see evals/README.md)
 docs/         → Setup guides for different tools
 ```
 
@@ -28,7 +31,7 @@ docs/         → Setup guides for different tools
 - YAML frontmatter with `name` and `description` fields
 - Description starts with what the skill does (third person), followed by trigger conditions ("Use when...")
 - Every skill has: Overview, When to Use, Process, Common Rationalizations, Red Flags, Verification
-- References are in `references/`, not inside skill directories
+- Shared references are in the root `references/` directory; the emerging convention for self-contained, distributable skills keeps a skill's own references inside `skills/<name>/references/`
 - Supporting files only created when content exceeds 100 lines
 
 ## Contributing
@@ -39,6 +42,7 @@ Before adding a new skill or significantly reworking an existing one, run the pr
 
 - `npm test` — Not applicable (this is a documentation project)
 - Validate: Check that all SKILL.md files have valid YAML frontmatter with name and description
+- Evals: `node scripts/run-evals.js` — trigger/routing evals for every skill (CI); `--behavioral <skill>` for graded runs
 
 ## Pull Requests
 

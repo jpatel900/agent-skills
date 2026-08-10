@@ -4,7 +4,7 @@ Deeper detail, examples, and edge cases moved out of SKILL.md for progressive di
 
 ## OWASP Top 10 Prevention Patterns
 
-These are prevention patterns, not a ranking. For the 2021 ordering, see the quick-reference table in `references/security-checklist.md`.
+These are prevention patterns, not a ranking. For the 2021 ordering, see the quick-reference table in `../../references/security-checklist.md`.
 
 ### Injection (SQL, NoSQL, OS Command)
 
@@ -199,16 +199,16 @@ function validateUpload(file: UploadedFile) {
 }
 ```
 
-## Triaging npm audit Results
+## Triaging Dependency Audit Results
 
-Not all audit findings require immediate action. Use this decision tree:
+Package-manager audits report known advisories; they do not prove a package is trustworthy or that vulnerable code is reachable. Use this decision tree:
 
 ```
-npm audit reports a vulnerability
+The native package-manager audit reports a vulnerability
 ├── Severity: critical or high
-│   ├── Is the vulnerable code reachable in your app?
+│   ├── Is the vulnerable code reachable in runtime, build, test, or deployment paths?
 │   │   ├── YES --> Fix immediately (update, patch, or replace the dependency)
-│   │   └── NO (dev-only dep, unused code path) --> Fix soon, but not a blocker
+│   │   └── NO (confirmed unused across those paths) --> Fix soon, but not a blocker
 │   └── Is a fix available?
 │       ├── YES --> Update to the patched version
 │       └── NO --> Check for workarounds, consider replacing the dependency, or add to allowlist with a review date
@@ -228,7 +228,12 @@ When you defer a fix, document the reason and set a review date.
 
 ### Supply-Chain Hygiene
 
-`npm audit` catches known CVEs; it won't catch a malicious or typosquatted package. Also:
+Do not assume npm or treat the nearest manifest as the install root. Apply this order:
+
+1. **Find the installation boundary and manager.** Use the workspace root that owns the lockfile, or an independent nested project only when it is outside that workspace. There, corroborate `packageManager` (when present), the lockfile, and CI; stop on disagreement or competing lockfiles. Pin the manager version and use the matrix in `../../references/security-checklist.md`.
+2. **Block dependency scripts before first execution.** Bootstrap with scripts disabled or a documented fail-closed policy, inspect the pending script source, approve only the minimum required packages, commit the policy, then verify with a clean frozen/immutable install. Never blanket-approve scripts.
+
+Audits only find known advisories; they do not catch a newly malicious or typosquatted package. Therefore:
 
 - **Commit the lockfile** and install with `npm ci` (not `npm install`) in CI — reproducible builds, no silent version drift.
 - **Review new dependencies before adding them** — maintenance, download counts, and whether they truly earn their place. Every dependency is attack surface (OWASP **A06: Vulnerable Components**, **LLM03: Supply Chain**).
@@ -349,7 +354,7 @@ container.textContent = await llm.reply(userMessage);
 ```
 ## See Also
 
-For detailed security checklists and pre-commit verification steps, see `references/security-checklist.md`.
+For detailed security checklists and pre-commit verification steps, see `../../references/security-checklist.md`.
 
 ## Common Rationalizations
 
@@ -362,6 +367,7 @@ For detailed security checklists and pre-commit verification steps, see `referen
 | "It's just a prototype" | Prototypes become production. Security habits from day one. |
 | "Threat modeling is overkill here" | Five minutes of "how would I attack this?" prevents the design flaws no control can patch later. |
 | "It's just LLM output, it's only text" | That "text" can be a SQL statement, a script tag, or a shell command. Treat it like any untrusted input. |
+| "The audit passed, so the dependency is safe" | Audits match known advisories. They do not detect a newly malicious package or make unreviewed install scripts safe to execute. |
 
 ## Red Flags
 
