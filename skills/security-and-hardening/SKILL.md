@@ -52,15 +52,13 @@ If you can't name the trust boundaries for a feature, you're not ready to secure
 - **Use httpOnly, secure, sameSite cookies** for sessions
 - **Run `npm audit`** (or equivalent) before every release
 
-### Ask First (Requires Human Approval)
+### Check Authorization at the Actual Boundary
 
-- Adding new authentication flows or changing auth logic
-- Storing new categories of sensitive data (PII, payment info)
-- Adding new external service integrations
-- Changing CORS configuration
-- Adding file upload handlers
-- Modifying rate limiting or throttling
-- Granting elevated permissions or roles
+Implement and test authorized, reversible local changes without asking again. This includes auth logic, upload handlers, CORS and rate limits. A security-sensitive topic alone does not create an approval gate.
+
+Before an irreversible or destructive action, spending, publishing or sending, private data leaving its approved boundary, or granting real elevated access, check the current session's authorization. Ask only for missing authorization or a decision only the user can make. Preserve applicable project approval requirements. Do not re-ask for an unchanged action already authorized in this session.
+
+Prepare local code, tests and a reviewable result while an external action awaits approval. A request to build an integration does not, by itself, authorize sending real sensitive data to a new service.
 
 ### Never Do
 
