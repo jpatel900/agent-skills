@@ -220,11 +220,13 @@ C) Ask — this seems like an intentional decision I shouldn't override
 If the spec doesn't cover a case you need to implement:
 
 1. Check existing code for precedent
-2. If no precedent exists, **stop and ask**
-3. Don't invent requirements — that's the human's job
+2. If no precedent exists, make and state a reasonable assumption for a reversible implementation detail, then continue
+3. Ask when the alternatives materially change the requested behavior or scope, require input only the user can give, or cross an approval boundary without existing authorization
+
+Do not invent requirements or expand scope. Missing precedent alone is not a reason to stop. Preserve existing session authorization and project gates for irreversible or destructive actions, spending, publishing or sending, and private data leaving its boundary. Continue independent work while a material question waits.
 
 ```
-MISSING REQUIREMENT:
+MATERIAL BEHAVIOR QUESTION:
 The spec defines task creation but doesn't specify what happens
 when a user creates a task with a duplicate title.
 
@@ -233,7 +235,7 @@ A) Allow duplicates (simplest)
 B) Reject with validation error (strictest)
 C) Append a number suffix like "Task (2)" (most user-friendly)
 
-→ Which behavior do you want?
+→ If project context does not resolve this user-visible behavior, ask which option is intended. Routine internal details do not need this gate.
 ```
 
 ### The Inline Planning Pattern
